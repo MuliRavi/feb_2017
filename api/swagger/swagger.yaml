@@ -1,0 +1,215 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: Hello World App
+# during dev, should point to your local machine
+host: localhost:10010
+# basePath prefixes all resource paths 
+basePath: /
+# 
+schemes:
+  # tip: remove http to make production-grade
+  - http
+  - https
+# format of bodies a client can send (Content-Type)
+consumes:
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+paths:
+  /hello:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: hello_world
+    get:
+      description: Returns 'Hello' to the caller
+      # used as the method name of the controller
+      operationId: hello
+      parameters:
+        - name: name
+          in: query
+          description: The name of the person to whom to say hello
+          required: false
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/HelloWorldResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /createAccount:
+     # binds a127 app logic to a route
+    x-swagger-router-controller: user
+    post:
+      description: Create new user account
+      # used as the method name of the controller
+      operationId: createAccount
+      parameters:
+        - name: body
+          in: body
+          description: Post request body
+          required: true
+          schema:
+            $ref: "#/definitions/CreateAccountBody"
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/DefaultSuccessResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/DefaultErrorResponse"
+  /getAccounts:
+     # binds a127 app logic to a route
+    x-swagger-router-controller: user
+    post:
+      description: Get User Account/Accounts
+      # used as the method name of the controller
+      operationId: getAccounts
+      parameters:
+        - name: body
+          in: body
+          description: Post request body
+          required: false
+          schema:
+            $ref: "#/definitions/GetAccountBody"
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/GetAccountSuccessResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/DefaultErrorResponse"
+  /authenticate:
+     # binds a127 app logic to a route
+    x-swagger-router-controller: user
+    post:
+      description: Get User Account/Accounts
+      # used as the method name of the controller
+      operationId: authenticate
+      parameters:
+        - name: body
+          in: body
+          description: Post request body
+          required: false
+          schema:
+            $ref: "#/definitions/AuthenticateBody"
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/GetAccountSuccessResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/DefaultErrorResponse"
+  /swagger:
+    x-swagger-pipe: swagger_raw
+# complex objects have schema definitions
+definitions:
+  CreateAccountBody:
+    required:
+      - givenName
+      - firstName
+      - lastName
+      - email
+      - password
+    properties:
+      givenName:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+  GetAccountBody:
+    properties:
+      email:
+        type: string
+  GetAccountSuccessResponse:
+    required:
+      - users
+      - responseCode
+      - responseMessage
+    properties:
+      users:
+        type: array
+        items:
+          type: object
+          properties:
+            givenName:
+              type: string
+            firstName:
+              type: string
+            lastName:
+              type: string
+            email:
+              type: string
+            password:
+              type: string
+      responseCode:
+        type: integer
+        default: 0
+      responseMessage:
+        type: string
+        default: Success
+  AuthenticateBody:
+    required:
+      - email
+      - password
+    properties:
+      email:
+        type: string
+      password:
+        type: string  
+  DefaultSuccessResponse:
+    required:
+      - responseCode
+      - responseMessage
+    properties:
+      responseCode:
+        type: integer
+        default: 0
+      responseMessage:
+        type: string
+        default: Success
+  DefaultErrorResponse:
+    required:
+      - responseCode
+      - responseMessage
+    properties:
+      responseCode:
+        type: integer
+        default: 1
+      responseMessage:
+        type: string
+        default: Error
+  HelloWorldResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
+  ErrorResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
