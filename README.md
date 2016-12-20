@@ -25,3 +25,4 @@ The project is in active development phase. Currently it only supports simple em
 ## Todos
 - Add multiple auth strategies. (Google, Facebook)
 - Ability to be used by multiple applications from a single instance.
+- Delete API for roles
